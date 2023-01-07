@@ -1,0 +1,70 @@
+CC=/usr/bin/cc
+CFLAGS=-DCMAKE_PROJECT_VERSION=\"1.0.3\" -Werror -Wall -std=gnu99\
+	-I../include\
+	-Ibuild/include\
+	-I../applications/zpc/components/zpc_stdin/include\
+	-I../applications/zpc/components/zpc_utils/include\
+	-I../components/uic_log/include\
+	-I../components/uic_config/include\
+	-I../applications/zpc/components/zpc_attribute_store/include\
+	-I../applications/zpc/components/zwave_definitions/include\
+	-I../components/uic_attribute_store/include\
+	-I../components/uic_datastore/include\
+	-I../applications/zpc/components/zwave_controller/include\
+	-I../applications/zpc/components/zwave_controller/src\
+	-I../applications/zpc/components/zwave_rx/include\
+	-I../applications/zpc/components/zpc_config/include\
+	-I../applications/zpc/components/zwave_tx/include\
+	-I../applications/zpc/components/zwave_api/include\
+	-I../components/uic_contiki/core\
+	-I../components/uic_contiki/platform/posix\
+	-I../components/uic_contiki/core/dev\
+	-I../components/uic_contiki/core/lib\
+	-I../components/uic_contiki/core/sys\
+	-I../components/uic_contiki/cpu/native\
+	-I../applications/zpc/components/zwave_tx_groups/include\
+	-I../applications/zpc/components/zwave_network_management/include\
+	-I../applications/zpc/components/zwave_security_validation/include\
+	-I../applications/zpc/components/s2/include\
+	-I../applications/zpc/components/s0/include\
+	-I../applications/zpc/components/zwave_transports/include\
+	-I../applications/zpc/components/zwave_transports/transport_service/include\
+	-I../applications/zpc/components/zwave_tx_scheme_selector/include\
+	-I../applications/zpc/components/zwave_command_classes/include\
+	-I../components/uic_attribute_utils/include\
+	-I../components/uic_attribute_resolver/include\
+	-I../components/uic_multi_invoke/include\
+	-I../applications/zpc/components/zpc_attribute_resolver/include\
+	-I../applications/zpc/components/zwave_command_handler/include\
+	-Ibuild/applications/zpc\
+	-Ibuild/applications/zpc/components/zwave_command_classes/src-gen\
+	-I../applications/zpc/components/zwave_command_classes/src\
+	-I../components/uic_ota/platform/posix\
+	-I../components/uic_ota/include\
+	-I../components/uic_definitions/include\
+	-I../components/uic_mqtt/include\
+	-I../components/uic_main_fd/include\
+	-I../applications/zpc/components/ucl_mqtt/include\
+	-I../applications/zpc/components/ucl_definitions/include\
+	-I../components/uic_stdin/include\
+	-I../applications/zpc/components/zpc_datastore/include\
+	-I../applications/zpc/components/zwave_smartstart_management/include\
+	-I../applications/zpc/components/zwave_smartstart_management/../s2/libs/zw-libs2/include\
+	-I../applications/zpc/components/network_monitor/include\
+	-I../components/uic_smartstart_management/include\
+	-I../components/uic_smartstart_management/mocks/.\
+	-I../components/uic_smartstart_management/mocks/../include\
+	-I../applications/zpc/components/dotdot_mapper/include\
+	-Ibuild/components/uic_dotdot_mqtt/include\
+	-Ibuild/components/uic_dotdot/include\
+	-Ibuild/applications/zpc/components/dotdot_mapper/include\
+	-I../applications/zpc/components/dotdot_mqtt_topics_handler/include\
+	-Ibuild/applications/zpc/components/dotdot_mqtt_topics_handler/include\
+	-I../components/uic_main/include\
+	-I../components/uic_attribute_mapper/include\
+	-I../applications/zpc/components/zcl_cluster_servers/include\
+
+%.o: %.c $(DEPS)
+	$(CC) -c -o $@ $< $(CFLAGS)
+zpc: main.o 
+	$(CC) -o zpc main.o
