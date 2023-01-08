@@ -109,7 +109,8 @@ func compileLine(makefile *os.File, line string) {
 }
 
 func main() {
-	err := os.Chdir("/home/richard/disks/sdb6/2023/pytronic/UnifySDK/")
+	unifySdkPath := "/home/richard/disks/sdb6/2023/pytronic/UnifySDK/"
+	err := os.Chdir(unifySdkPath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -144,7 +145,7 @@ func main() {
 	makefile.WriteString("\n%.o: %.c $(DEPS)\n")
 	makefile.WriteString("\t$(CC) -c -o $@ $< $(CFLAGS)\n")
 	makefile.WriteString("zpc: main.o \n")
-	makefile.WriteString("\t/usr/bin/c++ $(LDFLAGS) -o zpc main.o $(LDLIBS)")
-
+	makefile.WriteString("\t/usr/bin/c++ $(LDFLAGS) -o zpc main.o -Wl,-rpath," + unifySdkPath + "zpc-jni/libs " + "$(LDLIBS)")
+	makefile.WriteString("\n")
 	readFile.Close()
 }
