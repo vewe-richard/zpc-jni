@@ -64,7 +64,95 @@ CFLAGS=-DCMAKE_PROJECT_VERSION=\"1.0.3\" -Werror -Wall -std=gnu99\
 	-I../components/uic_attribute_mapper/include\
 	-I../applications/zpc/components/zcl_cluster_servers/include\
 
+LDLIBS	=\
+		libs/libzpc_stdin.a\
+		libs/libzwave_controller.a\
+		libs/libzpc_datastore.a\
+		libs/libzwave_s2.a\
+		libs/libzwave_network_management.a\
+		libs/libzwave_smartstart_management.a\
+		libs/libzwave_transports.a\
+		libs/libzwave_command_handler.a\
+		libs/libzwave_command_classes.a\
+		libs/libnetwork_monitor.a\
+		libs/libzpc_attribute_resolver.a\
+		libs/libzpc_attribute_store.a\
+		libs/libdotdot_mapper.a\
+		libs/libdotdot_mqtt_topics_handler.a\
+		libs/libuic_main.so\
+		libs/libuic_attribute_mapper.so\
+		libs/libucl_mqtt.a\
+		libs/libzcl_cluster_servers.a\
+		libs/libuic_smartstart_management.so\
+		libs/libzcl_group_cluster_server.a\
+		libs/libdotdot_mqtt_topics_handler.a\
+		libs/libzcl_cluster_servers.a\
+		libs/libzcl_group_cluster_server.a\
+		libs/libzcl_OTA_cluster_server.a\
+		libs/libzwave_command_classes.a\
+		libs/libuic_attribute_utils.so\
+		libs/libzpc_attribute_resolver.a\
+		libs/libuic_ota.so\
+		libs/libucl_node_state.a\
+		libs/libucl_mqtt_node_interview.a\
+		libs/libucl_network_management.a\
+		libs/libucl_nm_neighbor_discovery.a\
+		libs/libzwave_controller.a\
+		libs/libzwave_s2.a\
+		libs/libzwave_network_management.a\
+		libs/libzwave_transports.a\
+		libs/libzwave_command_handler.a\
+		libs/libzpc_attribute_store.a\
+		libs/libzpc_utils.a\
+		libs/libzwave_tx_groups.a\
+		libs/libzwave_rx.a\
+		libs/libzwave_tx.a\
+		libs/libzwave_tx_scheme_selector.a\
+		libs/libzwave_security_validation.a\
+		libs/libzwave_api.a\
+		libs/libzwave_s0.a\
+		libs/libtransport_service.a\
+		libs/libzwave_handlers.a\
+		libs/libdotdot_attributes.a\
+		libs/libzwave_controller.a\
+		libs/libzwave_s2.a\
+		libs/libzwave_network_management.a\
+		libs/libzwave_transports.a\
+		libs/libzwave_command_handler.a\
+		libs/libzpc_attribute_store.a\
+		libs/libzpc_utils.a\
+		libs/libzwave_tx_groups.a\
+		libs/libzwave_rx.a\
+		libs/libzwave_tx.a\
+		libs/libzwave_tx_scheme_selector.a\
+		libs/libzwave_security_validation.a\
+		libs/libzwave_api.a\
+		libs/libzwave_s0.a\
+		libs/libtransport_service.a\
+		libs/libzwave_handlers.a\
+		libs/libdotdot_attributes.a\
+		libs/libs2_controller.a\
+		libs/libs2crypto.a\
+		libs/libaes.a\
+		libs/libzpc_config.a\
+		libs/libuic_attribute_resolver.so\
+		libs/libuic_dotdot_mqtt.so\
+		libs/libuic_stdin.so\
+		libs/libuic_mqtt.so\
+		libs/libuic_main_fd.so\
+		libs/libuic_contiki.so\
+		libs/libuic_mqtt_client.so\
+		libs/libuic_mqtt_wrapper.so\
+		libs/libuic_contiki_platform.so\
+		libs/libuic_attribute_store.so\
+		libs/libuic_datastore.so\
+		libs/libuic_log.so\
+		libs/libuic_config.so\
+		-pthread -ldl
+
+LDFLAGS	=-pipe -Werror -Wall
+
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 zpc: main.o 
-	$(CC) -o zpc main.o
+	/usr/bin/c++ $(LDFLAGS) -o zpc main.o -Wl,-rpath,/home/richard/disks/sdb6/2023/pytronic/UnifySDK/zpc-jni/libs $(LDLIBS)

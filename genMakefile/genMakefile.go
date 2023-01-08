@@ -7,11 +7,57 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 )
 
-func linkLine(makefile *os.File, line string) {
+func copy(src string, dst string) error {
+	// Read all content of src to data, may cause OOM for a large file.
+	data, err := ioutil.ReadFile(src)
+	if err != nil {
+		println("ReadFile error", err)
+		return err
+	}
+	// Write data to dst
+	err = ioutil.WriteFile(dst, data, 0644)
+	if err != nil {
+		println("WriteFile", err)
+		return err
+	}
+	return nil
+}
 
+func linkLine(makefile *os.File, line string) {
+	words := strings.Fields(line)
+	makefile.WriteString("\nLDLIBS\t=\\\n")
+	for _, s := range words {
+		var tocopy string
+		if s[0] == '/' {
+			tocopy = s
+		} else if s[0] == '-' {
+			println("link option", s)
+			continue
+		} else {
+			tocopy = "build/" + s
+		}
+		if len(tocopy) < 1 {
+			continue
+		}
+		if tocopy[len(tocopy)-1] == '+' || tocopy[len(tocopy)-1] == 'w' || tocopy[len(tocopy)-2:] == ".o" {
+			continue
+		}
+		_, err := os.Stat(tocopy)
+		if err == nil {
+			//println("tocopy", tocopy, filepath.Base(tocopy))
+			err := copy(tocopy, "zpc-jni/libs/"+filepath.Base(tocopy))
+			if err == nil {
+				makefile.WriteString("\t\tlibs/" + filepath.Base(tocopy) + "\\\n")
+			}
+		} else {
+			println("Err: can not copy", s)
+		}
+	}
+	makefile.WriteString("\t\t-pthread -ldl\n")
 }
 
 func compileLine(makefile *os.File, line string) {
@@ -59,10 +105,6 @@ func compileLine(makefile *os.File, line string) {
 			println(s)
 		}
 	}
-	makefile.WriteString("\n%.o: %.c $(DEPS)\n")
-	makefile.WriteString("\t$(CC) -c -o $@ $< $(CFLAGS)\n")
-	makefile.WriteString("zpc: main.o \n")
-	makefile.WriteString("\t$(CC) -o zpc main.o")
 	println(words)
 }
 
@@ -90,14 +132,19 @@ func main() {
 
 	for fileScanner.Scan() {
 		if strings.Contains(fileScanner.Text(), "/usr/bin/cc") {
-			fmt.Println("compile line")
+			fmt.Println("----------------------------------------------compile line-------------------------------------")
 			compileLine(makefile, fileScanner.Text())
 
 		} else if strings.Contains(fileScanner.Text(), "/usr/bin/c++") {
-			fmt.Println("link line")
+			fmt.Println("-----------------------------------------------link line----------------------------------------")
 			linkLine(makefile, fileScanner.Text())
 		}
 	}
+	makefile.WriteString("\nLDFLAGS\t=-pipe -Werror -Wall\n")
+	makefile.WriteString("\n%.o: %.c $(DEPS)\n")
+	makefile.WriteString("\t$(CC) -c -o $@ $< $(CFLAGS)\n")
+	makefile.WriteString("zpc: main.o \n")
+	makefile.WriteString("\t/usr/bin/c++ $(LDFLAGS) -o zpc main.o $(LDLIBS)")
 
 	readFile.Close()
 }
